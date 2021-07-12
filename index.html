@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Bold 360 Dashboard </title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/gridstack/dist/gridstack.css" />
+    <link rel="stylesheet" href="bower_components/gridstack/dist/gridstack-extra.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="app.css">
+
+
+</head>
+
+<body ng-app="GridStack" ng-controller="DashboardCtrl">
+    <div class="container-fluid">
+        <h1>
+            <center>Dashboard Bold 360</center>
+        </h1>
+        <div>
+            <a class="btn btn-primary " ng-click="addWidget()" href="#">Add Widget</a>
+        </div>
+        <!-- STATUS -->
+        <div class="dropdown show status">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="profile-header-container">
+                    <div class="profile-header-img">
+                        <img class="img-circle" src="avator.jfif" />
+                        <!-- badge -->
+                        <div class="rank-label-container">
+                            <span class="label label-default rank-label">{{statusValue}}</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <div><a class="dropdown-item" href="#" ng-click="setSelect('Available')"><i class="fa fa-circle"
+                            style="margin-bottom:5px;color:#51D2B7"></i> Available</a></div>
+                <a class="dropdown-item" ng-click="setSelect('Away')" href="#"><i class="fa fa-circle"
+                        style="color:darksalmon"></i> Away</a>
+            </div>
+        </div>
+        <br>
+        <!-- DASHBOARD -->
+        <div class="row">
+            <div class="col-md-12">
+                <div gridstack class="grid-stack grid1" options="options" on-change="onChange(event,items)"
+                    on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)"
+                    on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
+                    <div gridstack-item ng-repeat="w in widgets" class="grid-stack-item" gs-item-x="w.x" gs-item-y="w.y"
+                        gs-item-width="w.width" gs-item-height="w.height" gs-item-autopos="1"
+                        on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)">
+                        <div class="grid-stack-item-content">
+                            <div class="title">
+                                <div class="headtitle"># of {{w.title}} <a class="btn remove" ng-click="removeWidget(w)"
+                                        href="#"><i class="fa fa-trash"></i></a></div>
+                            </div>
+                            <div class="contents">{{w.data}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- JS -->
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/lodash/dist/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/gridstack/dist/gridstack.js"></script>
+    <script src="../src/angular-hmac-sha512.js"></script>
+    <script src="../src/gridstack.controller.js"></script>
+    <script src="../src/gridstack.directive.js"></script>
+    <script src="../src/gridstackitem.directive.js"></script>
+
+    <script type="text/javascript">
+        var app = angular.module('GridStack', ['gridstack-angular']).controller('DashboardCtrl', function ($scope, $log, $timeout, $http) {
+
+
+            /** Widget to load in dashbaord **/
+            $scope.widgets = [{
+                title: "chats",
+                x: 0,
+                y: 0,
+                width: 3,
+                height: 1,
+                data: 0
+            }, {
+                title: "desktop users",
+                x: 0,
+                y: 0,
+                width: 3,
+                height: 1,
+                data: 0
+            }, {
+                title: "mobile users",
+                x: 0,
+                x: 0,
+                y: 0,
+                width: 3,
+                height: 1,
+                data: 0
+            }];
+
+            $scope.options = {
+                cellHeight: 200,
+                verticalMargin: 10
+            };
+            $scope.addWidget = function () {
+                $scope.widget = $scope.widgetNew;
+                var newWidget = {
+                    x: 0,
+                    y: 0,
+                    width: 1,
+                    height: 1
+                };
+                // $scope.widgets.push($scope.widgetNew[0]);
+            };
+
+            $scope.removeWidget = function (w) {
+                $scope.widgetNew = $scope.widgets;
+
+                var index = $scope.widgets.indexOf(w);
+                $scope.widgets.splice(index, 1);
+            };
+
+
+            $scope.onChange = function (event, items) {
+                $log.log("onChange event: " + event + " items:" + items);
+            };
+
+            $scope.onDragStart = function (event, ui) {
+                $log.log("onDragStart event: " + event + " ui:" + ui);
+            };
+
+            $scope.onDragStop = function (event, ui) {
+                $log.log("onDragStop event: " + event + " ui:" + ui);
+            };
+
+            $scope.onResizeStart = function (event, ui) {
+                $log.log("onResizeStart event: " + event + " ui:" + ui);
+            };
+
+            $scope.onResizeStop = function (event, ui) {
+                $log.log("onResizeStop event: " + event + " ui:" + ui);
+            };
+
+            $scope.onItemAdded = function (item) {
+                $log.log("onItemAdded item: " + item);
+            };
+
+            $scope.onItemRemoved = function (item) {
+                $log.log("onItemRemoved item: " + item);
+            };
+            $scope.statusValue = "Available"
+            $scope.setSelect = function (value) {
+                $scope.statusValue = value
+            }
+
+            /** create Request to get chart data **/
+            $timeout(function () {
+
+                var req = {
+                    method: 'POST',
+                    url: 'http://localhost:5000/getChatData',
+                    headers: {
+                        'Access-Control-Allow-Headers': '*',
+                        'Access-Control-Allow-Methods': '*',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    data: {
+                        "reportID": "2499533127729437248"
+                    }
+                }
+                console.log(req)
+                console.log($scope.authMethod)
+                $http(req).then(function (res) {
+                    console.log(res + JSON.stringify(res))
+                    $scope.widgets[2].data = res.data.sendRes.data[1]
+                    $scope.widgets[1].data = res.data.sendRes.data[0]
+
+                }, function (err) {
+                    console.log(err + JSON.stringify(err))
+                });
+                var req = {
+                    method: 'POST',
+                    url: 'http://localhost:5000/getChatData',
+                    headers: {
+
+                    },
+                    data: {
+                        "reportID": "2392542153370937189"
+                    }
+                }
+                console.log(req)
+                console.log($scope.authMethod)
+                $http(req).then(function (res) {
+                    console.log(res + JSON.stringify(res))
+                    $scope.widgets[0].data = res.data.sendRes.data
+                    //  $scope.widgetsNew = $scope.widgets
+
+
+                }, function (err) {
+                    console.log(err + JSON.stringify(err))
+                });
+
+            }, 2000);
+
+        })
+    </script>
+
+</body>
+
+</html>

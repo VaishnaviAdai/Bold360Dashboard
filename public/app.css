@@ -1,0 +1,60 @@
+.grid1 {
+    background: white;
+}
+
+.grid-stack-item-content {
+    color: #2c3e50;
+    text-align: center;
+    background-color: whitesmoke;
+}
+
+.remove {
+    bottom: 0px;
+    float: right;
+    color: crimson;
+}
+
+.contents {
+    margin-top: 34px;
+    font-weight: bold;
+    font-size: 100px;
+    color: crimson;
+}
+
+.headtitle {
+    color: crimson;
+    font-size: 16px;
+}
+
+.status {
+    float: right;
+}
+
+.imgBorder {
+    border: 4px solid lightblue;
+    border-radius: 25px;
+}
+
+.profile-header-container {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.profile-header-img>img.img-circle {
+    width: 120px;
+    height: 120px;
+    border: 2px solid #51D2B7;
+}
+
+.profile-header {
+    margin-top: 43px;
+}
+
+
+/** * Ranking component */
+
+.rank-label-container {
+    margin-top: -19px;
+    /* z-index: 1000; */
+    text-align: center;
+}
